@@ -8,6 +8,7 @@ import { ENV } from "./libs/env.js";
 import { connectDB } from "./libs/db.js";
 import { functions, inngest } from "./libs/inngest.js";
 import chatRoutes from "./routes/chat-routes.js"
+import sessionRoutes from "./routes/session-routes.js"
 
 const app = express();
 
@@ -24,6 +25,7 @@ app.use(clerkMiddleware()); //this adds auth field to request obj which allows t
 
 app.use("/api/inngest", serve({ client: inngest, functions }));
 app.use("/api/chat", chatRoutes)
+app.use("/api/sessions", sessionRoutes)
 
 app.get("/health", (req, res) => {
   res.status(200).json({ msg: "API is up & running!" });
