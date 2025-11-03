@@ -2,10 +2,12 @@ import path from "path";
 import express from "express";
 import cors from "cors";
 import { serve } from "inngest/express";
+import { clerkMiddleware } from "@clerk/express";
 
 import { ENV } from "./libs/env.js";
 import { connectDB } from "./libs/db.js";
 import { functions, inngest } from "./libs/inngest.js";
+import chatRoutes from "./routes/chat-routes.js"
 
 const app = express();
 
@@ -18,15 +20,15 @@ app.use(
     credentials: true,
   })
 );
+app.use(clerkMiddleware()); //this adds auth field to request obj which allows to do: req.auth()
 
 app.use("/api/inngest", serve({ client: inngest, functions }));
+app.use("/api/chat", chatRoutes)
 
 app.get("/health", (req, res) => {
-  res.status(200).json({ msg: "API is up and running" });
+  res.status(200).json({ msg: "API is up & running!" });
 });
-app.get("/books", (req, res) => {
-  res.status(200).json({ msg: "This is the books endpoint" });
-});
+
 
 //make ready for deployment
 if (ENV.NODE_ENV === "production") {
