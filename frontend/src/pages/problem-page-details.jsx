@@ -1,0 +1,93 @@
+import { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router";
+import { PROBLEMS } from "../data/problems";
+import Navbar from "../components/navbar";
+import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
+import ProblemDescription from "../components/problem-description";
+import CodeEditor from "../components/code-editor";
+import OutputPanel from "../components/output-panel";
+
+const ProblemsDetailsPage = () => {
+  const { id } = useParams();
+  const navigate = useNavigate();
+
+  const [currentProblemId, setCurrentProblemId] = useState("two-sum");
+  const [selectedLanguage, setSelectedLanguage] = useState("javascript");
+  const [code, setCode] = useState(
+    PROBLEMS[currentProblemId].starterCode.javascript
+  );
+  const [output, setOutput] = useState(null);
+  const [isRunning, setIsRunning] = useState(false);
+
+  const currentProblem = PROBLEMS[currentProblemId];
+
+  useEffect(() => {
+    if (id && PROBLEMS[id]) {
+      setCurrentProblemId(id);
+      setCode(PROBLEMS[id].starterCode[selectedLanguage]);
+      setOutput(null);
+    }
+  }, [id, selectedLanguage]);
+
+  const handleLanguageChange = (e) => {
+    const newLang = e.target.value;
+    setSelectedLanguage(newLang);
+    setCode(currentProblem.starterCode[newLang]);
+    setOutput(null);
+  };
+
+  //6:22
+
+  const handleProblemChange = (newProblemId) =>
+    navigate(`/problem/${newProblemId}`);
+
+  const triggerConfetti = () => {};
+
+  const checkIfTestsPassed = () => {};
+
+  const handleRunCode = () => {};
+
+  return (
+    <div className="h-screen bg-base-100 flex flex-col">
+      <Navbar />
+      <div className="flex-1">
+        <PanelGroup direction="horizontal">
+          <Panel defaultSize={40} minSize={30}>
+            {/* left panel - problem description */}
+            <ProblemDescription
+              problem={currentProblem}
+              currentProblemId={currentProblemId}
+              onProblemChange={handleProblemChange}
+              allProblems={Object.values(PROBLEMS)}
+            />
+          </Panel>
+
+          <PanelResizeHandle className="w-2 bg-base-300 hover:bg-primary transition-colors cursor-col-resize" />
+
+          <Panel defaultSize={60} minSize={30}>
+            {/* right panel - code editor & output panel */}
+            <PanelGroup direction="vertical">
+              {/* top panel - code editor */}
+              <Panel defaultSize={70} minSize={30}>
+                <CodeEditor
+                  selectedLanguage={selectedLanguage}
+                  code={code}
+                  isRunning={isRunning}
+                  onLanguageChange={handleLanguageChange}
+                  onCodeChange={setCode}
+                  onRunCode={handleRunCode}
+                />
+              </Panel>
+              <PanelResizeHandle className="h-2 bg-base-300 hover:bg-primary transition-colors cursor-row-resize" />
+              <Panel defaultSize={30} minSize={30}>
+                <OutputPanel />
+              </Panel>
+            </PanelGroup>
+          </Panel>
+        </PanelGroup>
+      </div>
+    </div>
+  );
+};
+
+export default ProblemsDetailsPage;
