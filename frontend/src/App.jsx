@@ -3,13 +3,21 @@ import HomePage from "./pages/home-page";
 import ProblemsPage from "./pages/problem-page";
 import { useUser } from "@clerk/clerk-react";
 import { Toaster } from "react-hot-toast";
+import DashboardPage from "./pages/dashboard-page";
 
 const App = () => {
   const { isSignedIn } = useUser();
   return (
     <>
       <Routes>
-        <Route path="/" element={<HomePage />} />
+        <Route
+          path="/"
+          element={!isSignedIn ? <HomePage /> : <Navigate to={"/dashboard"} />}
+        />
+        <Route
+          path="/dashboard"
+          element={isSignedIn ? <DashboardPage /> : <Navigate to={"/"} />}
+        />
         <Route
           path="/problems"
           element={isSignedIn ? <ProblemsPage /> : <Navigate to={"/"} />}
