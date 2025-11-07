@@ -48,7 +48,10 @@ const DashboardPage = () => {
 
   const isUserInSession = (session) => {
     if (!user.id) return false;
-    return session.host?.clerkId === user.id || session.participant?.clerkId === user.id;
+    return (
+      session.host?.clerkId === user.id ||
+      session.participant?.clerkId === user.id
+    );
   };
 
   return (
@@ -63,13 +66,16 @@ const DashboardPage = () => {
               activeSessionsCount={activeSessions.length}
               recentSessionsCount={recentSessions.length}
             />
-            <ActiveSession 
-            sessions={activeSessions}
-            isLoading={loadingActiveSessions}
-            isUserInSession={isUserInSession}
+            <ActiveSession
+              sessions={activeSessions}
+              isLoading={loadingActiveSessions}
+              isUserInSession={isUserInSession}
             />
           </div>
-          <RecentSessions sessions={recentSessions} isLoading={loadingRecentSession} />
+          <RecentSessions
+            sessions={recentSessions}
+            isLoading={loadingRecentSession}
+          />
         </div>
       </div>
       <CreateSessionModal
